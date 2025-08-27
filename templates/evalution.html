@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Offer Evaluation Committee Meeting{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="fas fa-clipboard-check me-2"></i>Offer Evaluation Committee Meeting
+                </h2>
+                <a href="{{ url_for('management_council', project_id=project.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-container">
+                <h3 class="form-section-title">
+                    MINUTES OF OFFER EVALUATION COMMITTEE
+                </h3>
+
+                <div class="alert alert-info mb-4">
+                    <h6><strong>Project:</strong> {{ project.title }}</h6>
+                    <p class="mb-0">Upload the minutes of offer evaluation committee meeting</p>
+                </div>
+
+                <div class="meeting-template bg-light p-4 rounded mb-4">
+                    <p>A RSQR was generated for <strong>{{ project.title }}</strong>. On response to it a meeting was held at ______________ and proposal was discussed. Detailed proposal was submitted by _______________________ from __________________. Based on this proposal for executing the RSQR, The CFA approved Offer Evaluation Committee on DATE for CARS project is as follows:</p>
+                    
+                    <ul class="mt-3">
+                        <li>_________________________, Sc ___ – Chairperson</li>
+                        <li>_________________________, Sc ___ – Member</li>
+                        <li>_________________________, Sc ___ – User</li>
+                    </ul>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        <label for="evaluation_pdf" class="form-label">
+                            <i class="fas fa-upload me-2"></i>Upload Minutes of Offer Evaluation Committee PDF
+                        </label>
+                        <div class="file-upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p class="mt-2">Click to upload or drag and drop</p>
+                            <p class="text-muted small">PDF files only, max 10MB</p>
+                            {{ form.evaluation_pdf(class="form-control") }}
+                        </div>
+                        {% if form.evaluation_pdf.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.evaluation_pdf.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>SAVE
+                        </button>
+                    </div>
+                </form>
+
+                {% if project.evaluation_pdf %}
+                    <div class="alert alert-success mt-4 text-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>MOM of Offer Evaluation Committee Meeting Saved Successfully</strong>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('summary_offer', project_id=project.id) }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right me-2"></i>Next: Summary Offer
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

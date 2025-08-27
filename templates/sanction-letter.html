@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Sanction Letter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="fas fa-stamp me-2"></i>Sanction Letter
+                </h2>
+                <a href="{{ url_for('contract', project_id=project.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-container">
+                <h3 class="form-section-title">SANCTION LETTER</h3>
+
+                <div class="alert alert-info mb-4">
+                    <h6><strong>Project:</strong> {{ project.title }}</h6>
+                    <p class="mb-0">Final step - Upload sanction letter to complete the project</p>
+                </div>
+
+                <!-- Sanction Letter Template -->
+                <div class="sanction-template bg-light p-4 rounded mb-4">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><strong>Title of the Project:</strong></td>
+                            <td>{{ project.title }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PI:</strong></td>
+                            <td>{{ project.pi }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Institute:</strong></td>
+                            <td>{{ project.institute }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CARS Project No.:</strong></td>
+                            <td>
+                                {% if project.contract_no %}
+                                    {{ project.contract_no }}
+                                {% else %}
+                                    _______________________
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Cost:</strong></td>
+                            <td>
+                                {% if project.total_amount %}
+                                    ₹ {{ "%.2f"|format(project.total_amount) }} Cr
+                                {% else %}
+                                    _______________________
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Start Date:</strong></td>
+                            <td>{{ project.created_date.strftime('%d %b %Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDC:</strong></td>
+                            <td>_______________________</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Availability of Funds:</strong></td>
+                            <td>
+                                Build up <span class="ms-3">Capital</span><br>
+                                Project <span class="ms-3">Revenue</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Expenditure Head and Schedule -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Expenditure Head</h6>
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <td>Personnel</td>
+                                <td class="text-end">
+                                    {% if project.personnel_cost %}
+                                        ₹ {{ "%.2f"|format(project.personnel_cost) }}
+                                    {% else %}
+                                        ___________________
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Equipment</td>
+                                <td class="text-end">
+                                    {% if project.equipment_cost %}
+                                        ₹ {{ "%.2f"|format(project.equipment_cost) }}
+                                    {% else %}
+                                        ___________________
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Contingency</td>
+                                <td class="text-end">
+                                    {% if project.contingencies_cost %}
+                                        ₹ {{ "%.2f"|format(project.contingencies_cost) }}
+                                    {% else %}
+                                        ___________________
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Travel</td>
+                                <td class="text-end">
+                                    {% if project.travel_cost %}
+                                        ₹ {{ "%.2f"|format(project.travel_cost) }}
+                                    {% else %}
+                                        ___________________
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Schedule of Payments</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-light">
+                                    <th>Milestone Description</th>
+                                    <th>Date</th>
+                                    <th>Payment (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Initial Advance</td>
+                                    <td>___________</td>
+                                    <td>___________________</td>
+                                </tr>
+                                <tr>
+                                    <td>At Performance Milestone I II & III of RSQR</td>
+                                    <td>___________</td>
+                                    <td>___________________</td>
+                                </tr>
+                                <tr>
+                                    <td>On submission of Final Report</td>
+                                    <td>___________</td>
+                                    <td>___________________</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-4">
+                        <label for="sanction_pdf" class="form-label">
+                            <i class="fas fa-upload me-2"></i>Upload Sanction Letter PDF
+                        </label>
+                        <div class="file-upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p class="mt-2">Click to upload or drag and drop</p>
+                            <p class="text-muted small">PDF files only, max 10MB</p>
+                            {{ form.sanction_pdf(class="form-control") }}
+                        </div>
+                        {% if form.sanction_pdf.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.sanction_pdf.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning btn-lg me-2">
+                            <i class="fas fa-sync me-2"></i>UPDATE
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check me-2"></i>COMPLETE PROJECT
+                        </button>
+                    </div>
+                </form>
+
+                {% if project.sanction_pdf %}
+                    <div class="alert alert-success mt-4 text-center">
+                        <i class="fas fa-trophy me-2"></i>
+                        <strong>🎉 Project Completed Successfully! 🎉</strong>
+                        <br>
+                        <small>Sanction Letter uploaded and project marked as complete</small>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Return to Dashboard
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

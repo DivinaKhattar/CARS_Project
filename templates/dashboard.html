@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}CARS Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>CARS DASHBOARD
+                </h2>
+                <a href="{{ url_for('rsqr') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>CREATE RSQR
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-project-diagram me-2"></i>Project Overview
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if projects %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">DATE</th>
+                                    <th scope="col">TITLE</th>
+                                    <th scope="col">PI</th>
+                                    <th scope="col">INSTITUTE</th>
+                                    <th scope="col">REFERENCE NO.</th>
+                                    <th scope="col">STATUS</th>
+                                    <th scope="col">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in projects %}
+                                <tr>
+                                    <td>{{ project.created_date.strftime('%d %b %Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('project_detail', project_id=project.id) }}" 
+                                           class="text-decoration-none fw-bold">
+                                            {{ project.title }}
+                                        </a>
+                                    </td>
+                                    <td>{{ project.pi }}</td>
+                                    <td>{{ project.institute }}</td>
+                                    <td>{{ project.reference_no or '-' }}</td>
+                                    <td>
+                                        {% if project.status == 'COMPLETE' %}
+                                            <span class="badge bg-success">{{ project.status }}</span>
+                                        {% elif project.status == 'INITIAL STAGE' %}
+                                            <span class="badge bg-secondary">{{ project.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary">{{ project.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('project_detail', project_id=project.id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if project.status == 'INITIAL STAGE' %}
+                                                <a href="{{ url_for('rsqr', project_id=project.id) }}" 
+                                                   class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No projects found</h5>
+                        <p class="text-muted">Get started by creating your first RSQR</p>
+                        <a href="{{ url_for('rsqr') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create RSQR
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-project-diagram fa-2x text-primary mb-2"></i>
+                    <h4 class="card-title">{{ projects|length }}</h4>
+                    <p class="card-text text-muted">Total Projects</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                    <h4 class="card-title">
+                        {{ projects|selectattr('status', 'ne', 'COMPLETE')|list|length }}
+                    </h4>
+                    <p class="card-text text-muted">Active Projects</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h4 class="card-title">
+                        {{ projects|selectattr('status', 'equalto', 'COMPLETE')|list|length }}
+                    </h4>
+                    <p class="card-text text-muted">Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-alt fa-2x text-info mb-2"></i>
+                    <h4 class="card-title">
+                        {{ projects|selectattr('status', 'equalto', 'INITIAL STAGE')|list|length }}
+                    </h4>
+                    <p class="card-text text-muted">Draft Projects</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Add any dashboard-specific JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

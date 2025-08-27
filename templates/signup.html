@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}CARS Signup{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="row min-vh-100">
+        <!-- Left side - DRDO Logo and Branding -->
+        <div class="col-lg-7 d-flex align-items-center justify-content-center bg-light">
+            <div class="text-center">
+                <div class="drdo-logo-container mb-4">
+                    <img src="{{ url_for('static', filename='images/drdo-logo.svg') }}" alt="DRDO Logo" class="drdo-logo">
+                </div>
+                <h1 class="display-4 text-primary mb-3">CARS</h1>
+                <p class="lead text-muted">Research Management System</p>
+                <p class="text-muted">Defence Research and Development Organisation</p>
+            </div>
+        </div>
+        
+        <!-- Right side - Signup Form -->
+        <div class="col-lg-5 d-flex align-items-center justify-content-center">
+            <div class="login-card">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-success text-white text-center py-4">
+                        <h3 class="mb-0">
+                            <i class="fas fa-user-plus me-2"></i>CARS SIGNUP
+                        </h3>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="mb-4">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Full Name
+                                </label>
+                                {{ form.name(class="form-control form-control-lg", placeholder="Enter your full name") }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>E-mail address
+                                </label>
+                                {{ form.email(class="form-control form-control-lg", placeholder="Enter your email") }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.email.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                {{ form.password(class="form-control form-control-lg", placeholder="Enter your password") }}
+                                {% if form.password.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">Password must be at least 6 characters long</small>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>SIGNUP
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <p class="mb-2">Already have an account?</p>
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>LOGIN
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Focus on name field when page loads
+        document.getElementById('name').focus();
+    });
+</script>
+{% endblock %}

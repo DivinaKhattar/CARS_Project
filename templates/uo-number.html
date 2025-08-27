@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}UO Number{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="fas fa-hashtag me-2"></i>UO No.
+                </h2>
+                <a href="{{ url_for('nda_soc', project_id=project.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-container">
+                <h3 class="form-section-title">UO No.</h3>
+
+                <div class="alert alert-info mb-4">
+                    <h6><strong>Project:</strong> {{ project.title }}</h6>
+                    <p class="mb-0">Enter UO Number and detailed expenditure breakdown</p>
+                </div>
+
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-4">
+                        <label for="uo_number" class="form-label">
+                            <i class="fas fa-hashtag me-2"></i>UO No. *
+                        </label>
+                        {{ form.uo_number(class="form-control form-control-lg", placeholder="Enter UO Number") }}
+                        {% if form.uo_number.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.uo_number.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="calculation-table">
+                        <h5 class="mb-3">Expected Expenditure Breakdown</h5>
+                        
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Expected Expenditure on:</th>
+                                    <th>Amount (in Rs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Personnel</strong></td>
+                                    <td>
+                                        {% if project.personnel_cost %}
+                                            <span class="text-success">₹ {{ "%.2f"|format(project.personnel_cost) }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Not specified</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Equipment</strong></td>
+                                    <td>
+                                        {% if project.equipment_cost %}
+                                            <span class="text-success">₹ {{ "%.2f"|format(project.equipment_cost) }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Not specified</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><strong>Expected Other Expenses (Sub-contracts must be provided in Attachment A):</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Travel</td>
+                                    <td>{{ form.travel_cost(class="form-control", placeholder="0.00", step="0.01") }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Expendables</td>
+                                    <td>{{ form.expendables_cost(class="form-control", placeholder="0.00", step="0.01") }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Contingencies</td>
+                                    <td>{{ form.contingencies_cost(class="form-control", placeholder="0.00", step="0.01") }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Visiting Faculty or Research Consultants</td>
+                                    <td><input type="number" class="form-control" placeholder="0.00" step="0.01"></td>
+                                </tr>
+                                <tr>
+                                    <td>Technical support services procured from outside the RSP</td>
+                                    <td><input type="number" class="form-control" placeholder="0.00" step="0.01"></td>
+                                </tr>
+                                <tr>
+                                    <td>Fees for use of intellectual assets (including royalties for legally protected IPR)</td>
+                                    <td><input type="number" class="form-control" placeholder="0.00" step="0.01"></td>
+                                </tr>
+                                <tr>
+                                    <td>Overheads (Fixed amount till completion of provision of research service)</td>
+                                    <td><input type="number" class="form-control" placeholder="0.00" step="0.01"></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td><strong>TOTAL</strong></td>
+                                    <td>
+                                        <strong>
+                                            {% if project.total_amount %}
+                                                ₹ {{ "%.2f"|format(project.total_amount) }}
+                                            {% else %}
+                                                ₹ 0.00
+                                            {% endif %}
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning btn-lg me-2">
+                            <i class="fas fa-sync me-2"></i>UPDATE
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>SAVE
+                        </button>
+                    </div>
+                </form>
+
+                {% if project.uo_number %}
+                    <div class="alert alert-success mt-4 text-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>UO Number Saved Successfully</strong>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('unique_section', project_id=project.id) }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right me-2"></i>Next: Unique Section Code
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

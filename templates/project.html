@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Project Details - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">
+                    <i class="fas fa-project-diagram me-2"></i>Project Details
+                </h2>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Project Overview -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Project Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td width="25%"><strong>Title:</strong></td>
+                            <td>{{ project.title }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PI:</strong></td>
+                            <td>{{ project.pi }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Institute:</strong></td>
+                            <td>{{ project.institute }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reference No.:</strong></td>
+                            <td>{{ project.reference_no or 'Not assigned' }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Created Date:</strong></td>
+                            <td>{{ project.created_date.strftime('%d %b %Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status:</strong></td>
+                            <td>
+                                {% if project.status == 'COMPLETE' %}
+                                    <span class="badge bg-success fs-6">{{ project.status }}</span>
+                                {% elif project.status == 'INITIAL STAGE' %}
+                                    <span class="badge bg-secondary fs-6">{{ project.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-primary fs-6">{{ project.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RSQR Details -->
+            {% if project.requirements %}
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>RSQR Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-primary">Requirements:</h6>
+                        <p class="text-muted">{{ project.requirements }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-primary">Justification:</h6>
+                        <p class="text-muted">{{ project.justification }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-primary">Deliverables:</h6>
+                        <p class="text-muted">{{ project.deliverables }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Financial Details -->
+            {% if project.total_amount %}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-rupee-sign me-2"></i>Financial Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Personnel Cost:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.personnel_cost or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Equipment Cost:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.equipment_cost or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Other Costs:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.other_cost or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>GST (18%):</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.gst_amount or 0) }}</td>
+                                </tr>
+                                <tr class="table-success">
+                                    <td><strong>Total Amount:</strong></td>
+                                    <td class="text-end"><strong>₹ {{ "%.2f"|format(project.total_amount) }}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            {% if project.uo_number %}
+                            <h6 class="text-primary">Additional Costs:</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Travel:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.travel_cost or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Expendables:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.expendables_cost or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Contingencies:</td>
+                                    <td class="text-end">₹ {{ "%.2f"|format(project.contingencies_cost or 0) }}</td>
+                                </tr>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Progress Steps -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tasks me-2"></i>Progress Tracker
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>RSQR</strong>
+                            {% if project.requirements %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.council_date %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Management Council</strong>
+                            {% if project.council_date %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.evaluation_pdf %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Offer Evaluation</strong>
+                            {% if project.evaluation_pdf %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.total_amount %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Summary Offer</strong>
+                            {% if project.total_amount %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.nda_pdf or project.soc_pdf %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>NDA & SOC</strong>
+                            {% if project.nda_pdf or project.soc_pdf %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.uo_number %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>UO Number</strong>
+                            {% if project.uo_number %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.section_code %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Unique Section Code</strong>
+                            {% if project.section_code %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.contract_no %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Contract</strong>
+                            {% if project.contract_no %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas {% if project.sanction_pdf %}fa-check-circle text-success{% else %}fa-circle text-muted{% endif %} me-2"></i>
+                            <strong>Sanction Letter</strong>
+                            {% if project.sanction_pdf %}
+                                <span class="badge bg-success ms-2">Complete</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Pending</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if project.status == 'INITIAL STAGE' %}
+                            <a href="{{ url_for('rsqr', project_id=project.id) }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit RSQR
+                            </a>
+                        {% elif project.status != 'COMPLETE' %}
+                            <!-- Continue workflow based on current status -->
+                            {% if not project.council_date and project.requirements %}
+                                <a href="{{ url_for('management_council', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to Management Council
+                                </a>
+                            {% elif not project.evaluation_pdf and project.council_date %}
+                                <a href="{{ url_for('offer_evaluation', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to Offer Evaluation
+                                </a>
+                            {% elif not project.total_amount and project.evaluation_pdf %}
+                                <a href="{{ url_for('summary_offer', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to Summary Offer
+                                </a>
+                            {% elif not (project.nda_pdf or project.soc_pdf) and project.total_amount %}
+                                <a href="{{ url_for('nda_soc', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to NDA & SOC
+                                </a>
+                            {% elif not project.uo_number and (project.nda_pdf or project.soc_pdf) %}
+                                <a href="{{ url_for('uo_number', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to UO Number
+                                </a>
+                            {% elif not project.section_code and project.uo_number %}
+                                <a href="{{ url_for('unique_section', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to Unique Section
+                                </a>
+                            {% elif not project.contract_no and project.section_code %}
+                                <a href="{{ url_for('contract', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Continue to Contract
+                                </a>
+                            {% elif not project.sanction_pdf and project.contract_no %}
+                                <a href="{{ url_for('sanction_letter', project_id=project.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right me-2"></i>Complete with Sanction Letter
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        
+                        <button class="btn btn-outline-primary" onclick="window.print()">
+                            <i class="fas fa-print me-2"></i>Print Details
+                        </button>
+                        
+                        {% if project.status == 'COMPLETE' %}
+                            <div class="alert alert-success text-center mb-0">
+                                <i class="fas fa-trophy me-2"></i>
+                                <strong>Project Completed!</strong>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
