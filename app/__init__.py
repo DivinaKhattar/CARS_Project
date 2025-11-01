@@ -6,6 +6,16 @@ from flask_mail import Mail
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 
+load_dotenv()
+
+# Initialize extensions globally
+db = SQLAlchemy()
+login_manager = LoginManager()
+mail = Mail()
+scheduler = BackgroundScheduler()
+
+def create_app():
+    app = Flask(__name__)
 def create_app():
     app = Flask(__name__)
 
@@ -19,7 +29,7 @@ def create_app():
     mail.init_app(app)
     scheduler.start()
 
-    # ✅ Safe upload folder handling for Vercel
+    # Safe upload folder handling for Vercel
     upload_folder = app.config.get('UPLOAD_FOLDER', '/tmp/uploads')
 
     # If running on Vercel, use /tmp (writable)
