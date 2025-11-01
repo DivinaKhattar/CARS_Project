@@ -27,5 +27,3 @@ WTForms==3.2.1
 gunicorn==22.0.0
 Flask-Mail==0.9.1
 psycopg2-binary
-python-3.12
-
